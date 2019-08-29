@@ -1,0 +1,27 @@
+openapi: 3.0.1
+info:
+  title: ""
+  description: ""
+  termsOfService: ""
+  version: ""
+servers:
+- url: https://127.0.0.1:5000
+security: []
+paths:
+  /items:
+    get:
+      summary: Create item
+      description: Create Item
+      operationId: create
+      requestBody:
+        content:
+          application/json: {}
+      responses:
+        200:
+          description: Create response
+          content:
+            application/json: {}
+        500:
+          description: Internal server error
+components:
+  schemas: {}
