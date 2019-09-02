@@ -2,24 +2,26 @@ import Settings._
 
 val baseName = "json-server"
 
-lazy val domain = (project in file("modules/domain"))
+val prjDomain = "domain"
+val prjApplication = "application"
+val prjInfrastructure = "infrastructure"
+
+lazy val domain = (project in file(s"modules/$prjDomain"))
   .settings(
-    name := s"$baseName-domain"
+    name := s"$baseName-$prjDomain"
   )
   .settings(coreSettings)
 
-lazy val application = (project in file("modules/application"))
+lazy val application = (project in file(s"modules/$prjApplication"))
   .settings(
-    name := s"$baseName-application"
+    name := s"$baseName-$prjApplication"
   )
   .settings(coreSettings)
   .dependsOn(domain)
 
-lazy val infrastructure = (project in file("modules/infrastructure"))
+lazy val infrastructure = (project in file(s"modules/$prjInfrastructure"))
   .settings(
-    name := s"$baseName-infrastructure",
-    mainClass in Compile := Some(
-      "json_server.http.WebServer"),
+    name := s"$baseName-$prjInfrastructure",
     libraryDependencies ++= Seq(
       Akka.akka_actor,
       Akka.akka_stream,
@@ -30,28 +32,40 @@ lazy val infrastructure = (project in file("modules/infrastructure"))
       AkkaHttp.akka_http_testkit % Test,
       Swagger.swagger,
       Rs.rs,
+      Cors.cors,
       Circe.core,
       Circe.generic,
       Circe.parser,
-      Spray.spray,
+//      Spray.spray,
       ScalikeJdbc.scalikeJdbc,
       ScalikeJdbc.scalikeJdbcConfig,
       ScalikeJdbc.scalikeJdbcTest,
       H2.h2
-    ),
+    )
   )
   .settings(coreSettings)
-  .dependsOn(domain, application)
-
-lazy val `root` = (project in file("."))
   .settings(
-    name := baseName
+    // Docker Settings
+    packageName in Docker := "json-server",
+    version in Docker := "0.1.0",
+    dockerBaseImage := "openjdk:8u131-jdk-alpine",
+    dockerExposedPorts := List(5000),
+    dockerExposedVolumes := Seq("/opt/docker/logs"),
+    dockerCmd := Nil
   )
-  .settings(coreSettings)
+  .dependsOn(domain, application)
+  .enablePlugins(JavaServerAppPackaging, AshScriptPlugin, DockerPlugin)
+
+lazy val root = (project in file("."))
+  .settings(
+    name := baseName,
+    mainClass in (Compile, run) := Some("json_server.http.WebServer")
+  )
   .aggregate(
     domain,
     application,
     infrastructure
   )
+  .enablePlugins(JavaServerAppPackaging, AshScriptPlugin, DockerPlugin)
 
 // .enablePlugins(ScalikejdbcPlugin)

@@ -8,6 +8,7 @@ import akka.http.scaladsl.server.{ ExceptionHandler, Route }
 import akka.util.Timeout
 import json_server.http.controller.ItemController
 import scalikejdbc.{ ConnectionPool, DB }
+import ch.megard.akka.http.cors.scaladsl.CorsDirectives._
 
 import scala.util.control.NonFatal
 
@@ -46,7 +47,7 @@ class Routes()(implicit system: ActorSystem, timeout: Timeout) extends SprayJson
   /***
     * Routing
     */
-  val routes: Route = handleExceptions(customExceptionHandler) {
+  val routes: Route = (cors() | handleExceptions(customExceptionHandler)) {
     extractLog { implicit log =>
       extractUri { uri =>
         extractMethod { method =>

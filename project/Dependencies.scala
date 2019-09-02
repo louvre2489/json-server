@@ -35,6 +35,11 @@ object Rs {
   val rs      = "javax.ws.rs" % "javax.ws.rs-api" % version
 }
 
+object Cors {
+  val version = "0.4.1"
+  val cors = "ch.megard" %% "akka-http-cors" % version
+}
+
 object Circe {
   val version = "0.11.1"
   val core    = "io.circe" %% "circe-core" % version

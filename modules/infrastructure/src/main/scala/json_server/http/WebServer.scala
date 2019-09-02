@@ -11,7 +11,7 @@ import com.typesafe.config.ConfigFactory
 import javax.net.ssl.{ KeyManagerFactory, SSLContext, TrustManagerFactory }
 import scalikejdbc.{ DB, SQL }
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ Await, ExecutionContext }
 import scala.concurrent.duration._
 import scala.io.StdIn
 import scalikejdbc.config._
@@ -54,14 +54,16 @@ object WebServer {
         system.log.error(ex, "error!!!")
     }
 
-    sys.addShutdownHook {
-      bindingFuture
-        .flatMap(_.unbind())
-        .onComplete { _ =>
-          materializer.shutdown()
-          system.terminate()
-        }
-    }
+    Await.ready(bindingFuture, Duration.Inf)
+
+    //   sys.addShutdownHook {
+    //     bindingFuture
+    //       .flatMap(_.unbind())
+    //       .onComplete { _ =>
+    //         materializer.shutdown()
+    //         system.terminate()
+    //       }
+    //   }
   }
 
   private def createHttpsConnectionContext(): HttpsConnectionContext = {

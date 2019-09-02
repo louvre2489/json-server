@@ -10,8 +10,7 @@ security: []
 paths:
   /items:
     get:
-      summary: Create item
-      description: Create Item
+      summary: Get Items
       operationId: create
       requestBody:
         content:
@@ -20,8 +19,23 @@ paths:
         200:
           description: Create response
           content:
-            application/json: {}
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemResponse'
         500:
           description: Internal server error
 components:
-  schemas: {}
+  schemas:
+    ItemResponse:
+      required:
+      - ItemName
+      - itemId
+      type: object
+      properties:
+        itemId:
+          type: integer
+          format: int32
+        ItemName:
+          type: string
+    Function1RequestContextFutureRouteResult:
+      type: object

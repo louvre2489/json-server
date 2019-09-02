@@ -5,7 +5,7 @@ import org.scalafmt.sbt.ScalafmtPlugin.autoImport._
 object Settings {
 
   val coreSettings = Seq(
-    organization := "noriaki tsushi",
+    organization := "noriaki-tsushi",
     scalaVersion := "2.12.8",
     scalacOptions ++= {
       Seq(
