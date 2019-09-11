@@ -1,9 +1,9 @@
 import Settings._
 
-val baseName = "json-server"
+val baseName = "bulletin_board"
 
-val prjDomain = "domain"
-val prjApplication = "application"
+val prjDomain         = "domain"
+val prjApplication    = "application"
 val prjInfrastructure = "infrastructure"
 
 lazy val domain = (project in file(s"modules/$prjDomain"))
@@ -23,10 +23,7 @@ lazy val infrastructure = (project in file(s"modules/$prjInfrastructure"))
   .settings(
     name := s"$baseName-$prjInfrastructure",
     libraryDependencies ++= Seq(
-      Akka.akka_actor,
-      Akka.akka_stream,
       Akka.akka_slf4j,
-      Akka.akka_testkit % Test,
       AkkaHttp.akka_http,
       AkkaHttp.akka_http_spray_json,
       AkkaHttp.akka_http_testkit % Test,
@@ -36,21 +33,16 @@ lazy val infrastructure = (project in file(s"modules/$prjInfrastructure"))
       Circe.core,
       Circe.generic,
       Circe.parser,
-//      Spray.spray,
-      ScalikeJdbc.scalikeJdbc,
-      ScalikeJdbc.scalikeJdbcConfig,
-      ScalikeJdbc.scalikeJdbcTest,
-      H2.h2
+      Redis.redis
     )
   )
   .settings(coreSettings)
   .settings(
     // Docker Settings
-    packageName in Docker := "json-server",
+    packageName in Docker := "bulletin_board",
     version in Docker := "0.1.0",
-    dockerBaseImage := "openjdk:8u131-jdk-alpine",
+    dockerBaseImage := "openjdk:8-jdk-alpine",
     dockerExposedPorts := List(5000),
-    dockerExposedVolumes := Seq("/opt/docker/logs"),
     dockerCmd := Nil
   )
   .dependsOn(domain, application)
@@ -67,5 +59,3 @@ lazy val root = (project in file("."))
     infrastructure
   )
   .enablePlugins(JavaServerAppPackaging, AshScriptPlugin, DockerPlugin)
-
-// .enablePlugins(ScalikejdbcPlugin)

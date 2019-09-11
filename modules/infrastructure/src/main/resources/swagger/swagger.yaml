@@ -5,37 +5,376 @@ info:
   termsOfService: ""
   version: ""
 servers:
-- url: https://127.0.0.1:5000
+- url: https://0.0.0.0:5000
+- url: http://0.0.0.0:5000
 security: []
 paths:
-  /items:
+  /api/v1/login:
+    post:
+      summary: Login
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        200:
+          description: Login Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        400:
+          description: Invalid Parameter
+        422:
+          description: Rule Violation
+        500:
+          description: Internal server error
+  /api/v1/threads/{threadId}/posts/{postId}:
     get:
-      summary: Get Items
-      operationId: create
+      summary: Post Find
+      operationId: find
       requestBody:
         content:
           application/json: {}
       responses:
         200:
-          description: Create response
+          description: Find Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ItemResponse'
+                $ref: '#/components/schemas/PostFindResponse'
+        400:
+          description: Invalid Parameter
+        422:
+          description: Rule Violation
+        500:
+          description: Internal server error
+    post:
+      summary: Post Create
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCreateRequest'
+      responses:
+        200:
+          description: Creation Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostCreateResponse'
+        400:
+          description: Invalid Parameter
+        422:
+          description: Rule Violation
+        500:
+          description: Internal server error
+  /api/v1/threads:
+    post:
+      summary: Thread Create
+      operationId: create_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThreadCreateRequest'
+      responses:
+        201:
+          description: Creation Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThreadCreateResponse'
+        400:
+          description: Invalid Parameter
+        422:
+          description: Rule Violation
+        500:
+          description: Internal server error
+    delete:
+      summary: Thread Delete
+      operationId: deleteThread
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThreadDeleteRequest'
+      responses:
+        200:
+          description: Delete Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThreadDeleteResponse'
+        400:
+          description: Invalid Parameter
+        422:
+          description: Rule Violation
+        500:
+          description: Internal server error
+  /api/v1/threads/{threadId}:
+    get:
+      summary: Thread Find
+      operationId: find_1
+      requestBody:
+        content:
+          application/json: {}
+      responses:
+        200:
+          description: Find Thread
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThreadFindResponse'
+        400:
+          description: Invalid Parameter
+        422:
+          description: Rule Violation
+        500:
+          description: Internal server error
+  /api/v1/user/create:
+    post:
+      summary: User Creation
+      operationId: create_2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreateRequest'
+      responses:
+        201:
+          description: Creation Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCreateResponse'
+        400:
+          description: Invalid Parameter
+        422:
+          description: Rule Violation
         500:
           description: Internal server error
 components:
   schemas:
-    ItemResponse:
+    LoginResponse:
       required:
-      - ItemName
-      - itemId
+      - accessToken
       type: object
       properties:
-        itemId:
+        accessToken:
+          type: string
+    LoginRequest:
+      required:
+      - password
+      - userId
+      type: object
+      properties:
+        userId:
           type: integer
-          format: int32
-        ItemName:
+          format: int64
+        password:
           type: string
     Function1RequestContextFutureRouteResult:
       type: object
+    ExceptionHandler:
+      type: object
+    PostCreateResponse:
+      required:
+      - content
+      - id
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        threadId:
+          type: integer
+          format: int64
+        content:
+          type: string
+        created_at:
+          type: string
+        created_by:
+          type: integer
+          format: int64
+    PostCreateRequest:
+      required:
+      - content
+      - threadId
+      type: object
+      properties:
+        threadId:
+          type: integer
+          format: int64
+        content:
+          type: string
+    PostFindResponse:
+      required:
+      - content
+      - id
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        threadId:
+          type: integer
+          format: int64
+        content:
+          type: string
+        created_at:
+          type: string
+        created_by:
+          type: integer
+          format: int64
+    SetString:
+      uniqueItems: true
+      required:
+      - empty
+      type: array
+      properties:
+        empty:
+          type: boolean
+        traversableAgain:
+          type: boolean
+      items:
+        type: string
+    ThreadCreateResponse:
+      required:
+      - id
+      - tags
+      - title
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        tags:
+          uniqueItems: true
+          required:
+          - empty
+          type: array
+          properties:
+            empty:
+              type: boolean
+            traversableAgain:
+              type: boolean
+          items:
+            type: string
+        created_at:
+          type: string
+        created_by:
+          type: integer
+          format: int64
+    Tag:
+      type: object
+      properties:
+        tagName:
+          type: string
+    ThreadCreateRequest:
+      required:
+      - tags
+      - title
+      type: object
+      properties:
+        title:
+          type: string
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+    ThreadDeleteResponse:
+      required:
+      - id
+      - tags
+      - title
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        tags:
+          uniqueItems: true
+          required:
+          - empty
+          type: array
+          properties:
+            empty:
+              type: boolean
+            traversableAgain:
+              type: boolean
+          items:
+            type: string
+        created_at:
+          type: string
+        created_by:
+          type: integer
+          format: int64
+    ThreadDeleteRequest:
+      required:
+      - threadID
+      type: object
+      properties:
+        threadID:
+          type: integer
+          format: int64
+    ThreadFindResponse:
+      required:
+      - id
+      - tags
+      - title
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        tags:
+          uniqueItems: true
+          required:
+          - empty
+          type: array
+          properties:
+            empty:
+              type: boolean
+            traversableAgain:
+              type: boolean
+          items:
+            type: string
+        created_at:
+          type: string
+        created_by:
+          type: integer
+          format: int64
+    UserCreateResponse:
+      required:
+      - userId
+      - userName
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        userName:
+          type: string
+        mailAddress:
+          type: string
+    UserCreateRequest:
+      required:
+      - mailAddress
+      type: object
+      properties:
+        mailAddress:
+          type: string
+        password:
+          type: string
+        userName:
+          type: string

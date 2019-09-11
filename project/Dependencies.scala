@@ -6,12 +6,12 @@ object Config {
 }
 
 object ScalaTest {
-  val version        = "3.0.5"
+  val version        = "3.0.8"
   val core: ModuleID = "org.scalatest" %% "scalatest" % version
 }
 
 object Akka {
-  val version      = "2.5.21"
+  val version      = "2.5.25"
   val akka_actor   = "com.typesafe.akka" %% "akka-actor" % version exclude ("com.typesafe", "config")
   val akka_slf4j   = "com.typesafe.akka" %% "akka-slf4j" % version
   val akka_stream  = "com.typesafe.akka" %% "akka-stream" % version
@@ -19,7 +19,7 @@ object Akka {
 }
 
 object AkkaHttp {
-  val version              = "10.1.7"
+  val version              = "10.1.9"
   val akka_http            = "com.typesafe.akka" %% "akka-http" % version
   val akka_http_spray_json = "com.typesafe.akka" %% "akka-http-spray-json" % version
   val akka_http_testkit    = "com.typesafe.akka" %% "akka-http-testkit" % version
@@ -37,7 +37,7 @@ object Rs {
 
 object Cors {
   val version = "0.4.1"
-  val cors = "ch.megard" %% "akka-http-cors" % version
+  val cors    = "ch.megard" %% "akka-http-cors" % version
 }
 
 object Circe {
@@ -45,23 +45,16 @@ object Circe {
   val core    = "io.circe" %% "circe-core" % version
   val generic = "io.circe" %% "circe-generic" % version
   val parser  = "io.circe" %% "circe-parser" % version
+
+  object Validation {
+    val version = "0.0.6"
+    val core    = "io.tabmo" %% "circe-validation-core" % version
+  }
 }
 
-object Spray {
-  val version = "1.3.5"
-  val spray   = "io.spray" %% "spray-json" % version
-}
-
-object ScalikeJdbc {
-  val version           = "3.3.2"
-  val scalikeJdbc       = "org.scalikejdbc" %% "scalikejdbc" % version
-  val scalikeJdbcConfig = "org.scalikejdbc" %% "scalikejdbc-config" % version
-  val scalikeJdbcTest   = "org.scalikejdbc" %% "scalikejdbc-test" % "3.3.2" % "test"
-}
-
-object H2 {
-  val version = "1.4.197"
-  val h2      = "com.h2database" % "h2" % version
+object Redis {
+  val version = "3.10"
+  val redis   = "net.debasishg" %% "redisclient" % version
 }
 
 object Logback {
